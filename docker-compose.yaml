@@ -23,3 +23,6 @@ services:
       - ./traefik.yml:/traefik.yml:ro # static traefik configuration
       - ./certs/:/etc/traefik/certs/:ro
       - ./conf/:/etc/traefik/conf/:ro
+networks:
+  default:
+    name: traefik_default
