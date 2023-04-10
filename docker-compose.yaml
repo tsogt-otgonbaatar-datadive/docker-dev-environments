@@ -1,0 +1,25 @@
+version: "3"
+services:
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.9
+    # Enables the web UI and tells Traefik to listen to Docker
+    # command:  jh
+    ports:
+      # The HTTP port
+      - "80:80"
+      - "443:443"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    labels:
+      - traefik.enable=true # if true, service will be published in traefik
+      - traefik.http.routers.traefik.entrypoints=websecure # setting entry point, that will be used by the service
+      # - traefik.http.routers.traefik.rule=Host(`traefik.local`) # the rule by which request will be routed by traefik
+      - traefik.http.routers.traefik.tls=true # enabling tls for the router
+      - traefik.http.routers.traefik.service=api@internal # specifying a service for the router
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/traefik.yml:ro # static traefik configuration
+      - ./certs/:/etc/traefik/certs/:ro
+      - ./conf/:/etc/traefik/conf/:ro
